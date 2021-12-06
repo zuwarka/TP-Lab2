@@ -40,7 +40,7 @@ void Price::set_shop(string shop)
 	this->shop = shop;
 }
 
-void Price::set_cost(int cost)
+void Price::set_cost(string cost)
 {
 	this->cost = cost;
 }
@@ -55,8 +55,35 @@ string Price::get_shop() const
 	return shop;
 }
 
-int Price::get_cost() const
+string Price::get_cost() const
 {
 	return cost;
 }
 
+void Price::show()
+{
+	cout << "------------------------------------" << endl;
+	cout << "Shop: " << shop << endl;
+	cout << "Item: " << item << endl;
+	cout << "Cost: " << cost << endl;
+	cout << "------------------------------------" << endl;
+}
+
+void Price::redact_str(int num_str, string red_str)
+{
+	switch (num_str)
+	{
+	case 1:
+		this->shop = red_str;
+		break;
+	case 2:
+		this->item = red_str;
+		break;
+	case 3:
+		this->cost = red_str;
+		break;
+	default:
+		throw "Incorrect number of string!";
+		break;
+	}
+}

@@ -5,9 +5,9 @@
 
 using namespace std;
 
-My_List::My_List() : m_size(0), head(nullptr) {}
+My_List::My_List() : m_size(0), head(NULL), tail(NULL) {}
 
-My_List::My_List(int size) : head(nullptr) { this->m_size = size; }
+My_List::My_List(int size) : head(NULL), tail(NULL) { this->m_size = size; }
 
 My_List::~My_List()
 {
@@ -43,172 +43,218 @@ Price* My_List::operator[] (const int index)
 	}
 }
 
-int My_List::get_size() { return m_size; }
-
-void My_List::insert(Price* n_data)
+void My_List::push_head(Price* n_data)
 {
-	Elem* tmp;
-	tmp = new Elem;
+	Elem* tmp = new Elem;
+	tmp->prev = 0;
+	tmp->m_data = n_data;
+	tmp->next = head;
+
+	if (head != NULL)
+	{
+		head->prev = tmp;
+	}
 
 	if (m_size == 0)
 	{
-		tmp->m_data = n_data;
-		tmp->next = 0;
-		++m_size;
+		head = tail = tmp;
 	}
 	else
 	{
-		tmp->m_data = n_data;
-		tmp->next = head;
-		++m_size;
+		head = tmp;
 	}
 
-	head = tmp;
+	m_size++;
+}
+
+void My_List::push_tail(Price* n_data)
+{
+	Elem* tmp = new Elem;
+	tmp->next = 0;
+	tmp->m_data = n_data;
+	tmp->prev = tail;
+
+	if (tail != NULL)
+	{
+		tail->next = tmp;
+	}
+
+	if (m_size == 0)
+	{
+		head = tail = tmp;
+	}
+	else
+	{
+		tail = tmp;
+	}
+
+	m_size++;
 }
 
 void My_List::remove(int index)
 {
+	//если параметр отсутствует или равен 0, то запрашиваем его
+	/*if (index == 0)
+	{
+		cout << "Input position: ";
+		cin >> index;
+	}*/
+
+	// Позиция от 1 до Count?
+	if (index < 1 || index > m_size + 1)
+	{
+		throw "Incorrect position!";
+		system("pause");
+		//return;
+	}
+
+	//если добавляем не в конец и не в начало списка, то
+	Elem* DelElem = head;
+	for (int i = 0; i < index; i++)
+	{
+		DelElem = DelElem->next;
+	}
+
+	// Доходим до элемента, 
+	// который предшествует
+	Elem* PrevDel = DelElem->prev;
+	Elem* NextDel = DelElem->next;
+
+	//настройка связей
+	if (PrevDel != NULL && m_size != 1)
+	{
+		PrevDel->next = NextDel;
+	}
+	if (NextDel != NULL && m_size != 1)
+	{
+		NextDel->next = PrevDel;
+	}
+	if (index == 1)
+	{
+		head = NextDel;
+	}
+	if (index == m_size)
+	{
+		tail = PrevDel;
+	}
+
+	delete DelElem;
+	m_size--;
+}
+
+void My_List::insert(Price* n_data, int index = 0)
+{
+	//если параметр отсутствует или равен 0, то запрашиваем его
+	if (index == 0)
+	{
+		push_tail(n_data);
+		return;
+	}
+
+	// Позиция от 1 до Count?
+	if (index < 1 || index > m_size + 1)
+	{
+		throw "Incorrect position!";
+		system("pause");
+		return;
+	}
+
+	// Если вставка в конец списка
+	if (index == m_size + 1)
+	{
+		push_tail(n_data);
+		return;
+	}
+	else if (index == 1)
+	{
+		push_head(n_data);
+		return;
+	}
+
+	//если добавляем не в конец и не в начало списка, то
+	Elem* NewElem = head;
+	for (int i = 0; i < index; i++)
+	{
+		NewElem = NewElem->next;
+	}
+
+	// Доходим до элемента, 
+	// который предшествует
+	Elem* PrevNewElem = NewElem->prev;
+
+	Elem* tmp = new Elem;
+
+	//настройка связей
+	if (PrevNewElem != NULL && m_size != 1)
+	{
+		PrevNewElem->next = tmp;
+	}
+
+	tmp->next = NewElem;
+	tmp->prev = PrevNewElem;
+	NewElem->prev = tmp;
+
+	m_size++;
+}
+
+int My_List::get_size() { return m_size; }
+
+void My_List::swap(Price* other, Price* another)
+{
+	Price* temp = other;
+	other = another;
+	another = temp;
+}
+
+void My_List::sort()
+{
+	Elem* one = new Elem;
+	Elem* two = new Elem;
+
+	for (int i = 0; i < m_size - 1; i++)
+	{
+		one = head;
+		for (int j = 0; j < m_size - i - 1; j++)
+		{
+			two = one->next;
+			if (one->m_data->get_shop().compare(two->m_data->get_shop()) < 0)
+			{
+				swap(one->m_data, two->m_data);
+			}
+			one = two;
+			two = one->next;
+		}
+	}
+}
+
+void My_List::finding(string name)
+{
 	if (m_size == 0)
 	{
-		throw "There's nothing to delete!";
+		throw "There's nothing to find, the list is empty.";
 		system("pause");
 	}
-	int counter = 0;
-	while (counter < index - 1)
-	{
-		head = head->next;
-		counter++;
-	}
 
-	Elem* prev = head;
-	prev->next->m_data->~Price();
-	prev->next->next;
-	delete(prev->next);
-	--m_size;
-}
-/*
-void Keeper::save()
-{
-	ofstream outfile;
-	string initfile = "data.txt";
-	outfile.open(initfile);
-	if (!outfile)
-	{
-		throw "Error opening file!";
-		system("pause");
-		exit(1);
-	}
-	else
-	{
-		outfile << m_size << endl;
-		outfile.close();
-	}
+	Elem* tmp;
+	tmp = head;
+	int shop_is_in = 0; //признак отстутствия введенного названия магазина
+	//int name_shop = 0; //признак вывода названия магазина на экран
 
-	Elem* buffer = head;
 	for (int i = 0; i < m_size; i++)
 	{
-		buffer->m_data->saving();
-		buffer = buffer->next;
-	}
-}
-
-void Keeper::load()
-{
-	if (m_size != 0)
-	{
-		Elem* buffer;
-		while (head->next != NULL)
+		if (tmp->m_data->get_shop().compare(name) == 0)
 		{
-			buffer = head;
-			head = head->next;
-			buffer->m_data->~Character();
-			delete(buffer);
+			cout << tmp->m_data->get_item() << ", " << tmp->m_data->get_cost() << endl << endl;
+
+			shop_is_in = 1;
 		}
-		head->m_data->~Character();
-		delete(head);
+		tmp = tmp->next;
 	}
 
-
-	ifstream infile;
-	int read_size, num_character; //ïåðåìåííàÿ ÷èòêè ðàçìåðà è ïåðñîíàæà
-	string a, b, c, d, e, f, g; //ñ÷èòûâàåìûå ñòðîêè
-	string initfile = "data.txt";
-	Character* characters;
-
-	infile.open(initfile);
-	if (!infile)
+	if (shop_is_in == 0)
 	{
-		throw "Error opening!";
+		throw "There's no inputtes shop.";
 		system("pause");
-		exit(1);
 	}
-
-	infile >> read_size; //÷èòàåì êîë-âî ïåðñîíàæåé
-
-	for (int i = 0; i < read_size; i++)
-	{
-		infile >> num_character; //÷èòàåì íîìåð ïåðñîíàæà
-		infile.ignore(32767, '\n');
-
-		if (num_character == 1) //ïåðåä íàìè ãåðîé
-		{
-			//infile >> a >> b >> c >> d >> e;
-
-			getline(infile, a);
-			getline(infile, b);
-			getline(infile, c);
-			getline(infile, d);
-			getline(infile, e);
-			Hero* hero;
-			hero = new Hero;
-			hero->set_name(a);
-			hero->set_level(b);
-			hero->set_weapon(c);
-			hero->set_health(d);
-			hero->set_armor(e);
-			characters = hero;
-			insert(characters);
-		}
-
-		if (num_character == 2) //ïåðåä íàìè çëîäåé
-		{
-			//infile >> a >> b >> c >> d >> e >> f >> g;
-
-			getline(infile, a);
-			getline(infile, b);
-			getline(infile, c);
-			getline(infile, d);
-			getline(infile, e);
-			getline(infile, f);
-			getline(infile, g);
-			Villain* villain;
-			villain = new Villain;
-			villain->set_name(a);
-			villain->set_level(b);
-			villain->set_weapon(c);
-			villain->set_guilt(d);
-			villain->set_place(e);
-			villain->set_health(f);
-			villain->set_armor(g);
-			characters = villain;
-			insert(characters);
-		}
-
-		if (num_character == 3) //ïåðåä íàìè ìîíñòð
-		{
-			//infile >> a >> b >> c;
-
-			getline(infile, a);
-			getline(infile, b);
-			getline(infile, c);
-			Monster* monster;
-			monster = new Monster;
-			monster->set_name(a);
-			monster->set_level(b);
-			monster->set_description(c);
-			characters = monster;
-			insert(characters);
-		}
-	}
+	//system("pause");
 }
-*/
