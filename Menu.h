@@ -1,6 +1,7 @@
 #pragma once
 #include "Price.h"
 #include "My_List.h"
+#include "Filethread.h"
 #include <iostream>
 
 using namespace std;
@@ -10,21 +11,21 @@ class Menu
 private:
 
 	My_List list;
-	int exit_main = 1; //выход из программы
-	int exit_minor = 1; //выход в общее меню
+	Filethread initfile;
+	int exit_main = 1; //ГўГ»ГµГ®Г¤ ГЁГ§ ГЇГ°Г®ГЈГ°Г Г¬Г¬Г»
+	int exit_minor = 1; //ГўГ»ГµГ®Г¤ Гў Г®ГЎГ№ГҐГҐ Г¬ГҐГ­Гѕ
 	int flag_not_show = 1;
 
 public:
 
-	//общие методы
+	//Г®ГЎГ№ГЁГҐ Г¬ГҐГІГ®Г¤Г»
 	void main_menu();
 	void point_one();
-	void point_two();
 	void exit_from_programm();
 	void exit_to_main_menu();
 	int show_options_main_menu();
 
-	//методы под первую лабу
+	//Г¬ГҐГІГ®Г¤Г» ГЇГ®Г¤ ГЇГҐГ°ГўГіГѕ Г«Г ГЎГі
 	int show_options_point_one();
 	void show_items_alphabetic_order();
 	void find_shop();
@@ -32,6 +33,6 @@ public:
 	void redact_element();
 	void delete_element();
 
-	//методы под вторую лабу
-
+	//Г¬ГҐГІГ®Г¤Г» ГЇГ®Г¤ ГўГІГ®Г°ГіГѕ Г«Г ГЎГі
+	void point_two();
 };
