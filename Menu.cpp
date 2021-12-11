@@ -230,6 +230,5 @@ void Menu::point_one()
 
 void Menu::point_two()
 {
-	Filethread init;
-	init.scan_text();
+	initfile.scan_text();
 }
