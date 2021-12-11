@@ -63,9 +63,9 @@ string Price::get_cost() const
 void Price::show()
 {
 	cout << "------------------------------------" << endl;
-	cout << "Shop: " << shop << endl;
-	cout << "Item: " << item << endl;
-	cout << "Cost: " << cost << endl;
+	cout << "1. Shop: " << shop << endl;
+	cout << "2. Item: " << item << endl;
+	cout << "3. Cost: " << cost << endl;
 	cout << "------------------------------------" << endl;
 }
 

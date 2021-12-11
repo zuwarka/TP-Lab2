@@ -1,5 +1,7 @@
 #include "Menu.h"
+#include "Filethread.h"
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 using namespace std;
@@ -30,6 +32,7 @@ int Menu::show_options_main_menu()
 	cout << "1 - Standart threads" << endl;
 	cout << "2 - File threads" << endl;
 	cout << "0 - Exit from programm" << endl;
+	cout << "-> ";
 	cin >> c;
 	system("cls");
 	return c;
@@ -56,6 +59,7 @@ int Menu::show_options_point_one()
 	cout << "4 - Redact element" << endl;
 	cout << "5 - Delete element" << endl;
 	cout << "0 - Back to main menu" << endl;
+	cout << "-> ";
 	cin >> c;
 	system("cls");
 	return c;
@@ -63,7 +67,6 @@ int Menu::show_options_point_one()
 
 void Menu::show_items_alphabetic_order()
 {
-	system("cls");
 	try
 	{
 		if (list.get_size() == 0)
@@ -107,27 +110,19 @@ void Menu::add_element()
 	{
 		Price* new_price = new Price;
 		string new_item, new_shop, new_cost;
-		int index;
 
 		cin.ignore(32767, '\n');
 		cout << "You want to add new item.\nInput its name: ";
 		getline(cin, new_item);
 		new_price->set_item(new_item);
 		cout << "Input its shop: ";
-		//cin.ignore(32767, '\n');
 		getline(cin, new_shop);
 		new_price->set_shop(new_shop);
-		cout << "Input its cost in integer: ";
-		//cin.ignore(32767, '\n');
+		cout << "Input its cost in rubles: ";
 		getline(cin, new_cost);
 		new_price->set_cost(new_cost);
 
-		cout << "Total elements: " << list.get_size() << endl;
-		cout << "If you input an index as zero, a new item will be add to tail of list." << endl;
-		cout << "Input index of new item: ";
-		cin >> index;
-
-		list.insert(new_price, index);
+		list.insert(new_price);
 	}
 	catch (const char* ex) { cout << "Error: " << ex << endl; }
 	system("pause");
@@ -141,12 +136,16 @@ void Menu::redact_element()
 
 	try
 	{
-		show_items_alphabetic_order();
-	}
-	catch (const char* ex) { cout << "Error: " << ex << endl; }
+		if (list.get_size() == 0)
+		{
+			throw "There's nothing to redact.";
+		}
+		list.sort();
+		for (int i = 0; i < list.get_size(); i++)
+		{
+			list[i]->show();
+		}
 
-	try
-	{
 		cout << "\nWhat element do you want to change (from 1 to " << list.get_size() << "): " << endl;
 		cin >> c2;
 
@@ -174,7 +173,15 @@ void Menu::delete_element()
 	int c2;
 	try
 	{
-		show_items_alphabetic_order();
+		if (list.get_size() == 0)
+		{
+			throw "There's nothing to delete.";
+		}
+		list.sort();
+		for (int i = 0; i < list.get_size(); i++)
+		{
+			list[i]->show();
+		}
 
 		cout << "\nWhat element do you want to delete (from 1 to " << list.get_size() << "): " << endl;
 		cin >> c2;
@@ -184,7 +191,7 @@ void Menu::delete_element()
 			throw "Incorrect number!";
 		}
 
-		list.remove(c2);
+		list.insert(c2);
 	}
 	catch (const char* ex) { cout << "Error: " << ex << endl; }
 	system("pause");
@@ -223,5 +230,6 @@ void Menu::point_one()
 
 void Menu::point_two()
 {
-
+	Filethread init;
+	init.scan_text();
 }

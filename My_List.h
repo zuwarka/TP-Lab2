@@ -24,11 +24,8 @@ public:
 	Price* operator[] (int index);
 
 	int get_size();
-	void push_head(Price* n_data); 
-	void push_tail(Price* n_data); 
-	void insert(Price* n_data, int index);
-	void remove(int index); //удалить элемент из списка
+	void insert(Price* n_data); //добаляем элемент в начало списка - перегруженная операция
+	void insert(int index); //удалить элемент из списка - перегруженная операция
 	void sort(); //пузырьковая сортировка магазинов по алфавиту
-	void swap(Price* other, Price* another); //перемена местами двух элементов списка
 	void finding(string name); //поиск элементов списка по параметру с клавиатуры
 };
